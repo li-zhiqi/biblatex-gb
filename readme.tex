@@ -1,0 +1,63 @@
+\documentclass{article}
+\usepackage[CJKnumber]{xeCJK}
+\setCJKmainfont[BoldFont=SimHei]{SimSun}
+\usepackage{url,hyperref}
+\title{符合GB/T7714-2005标准的biblatex格式文件(v0.02b)}
+\author{李志奇}
+\begin{document}
+\maketitle
+
+\section{简介}
+	这是我编写的基于biblatex的文献生成格式文件，目标是符合GB/T7714-2005标准。希望能对大家使用\LaTeX 有帮助。
+	\subsection{文件说明}
+	\begin{enumerate}
+		\item \verb|./src/gbt7714_2005_n.bbx|和\verb|./src/gbt7714_2005_n.cbx|可以生成符合GB/T7714-2005中顺
+			序索引规范的引用文献。
+	
+		\item \verb|./src/gbt7714_2005_ay.bbx|和\verb|./src/gbt7714_2005_ay.cbx|可以生成符合GB/T7714-2005中
+			著者-出版年索引规范的引用文献。
+	
+		\item \verb|./src/gbt7714_2005.def|包含了两种引用方式都会用到的命令。
+	
+		\item \verb|./src/authoryear_test.tex|和\verb|./src/numeric_test.tex|分布为著者-出版年和顺序索引方式
+			的测试文件，其中的注释包含了对于使用方法的说明。
+	
+		\item \verb|.src/ref.bib|中包含了测试中使用到的所有引用条目，绝大大多数来自GB/T7714-2005规范
+	
+		\item Makefile和run.bat为生成pdf文件的脚本文件
+	\end{enumerate}
+	
+   \subsection{测试环境}
+   \begin{enumerate}
+		\item Ubuntu10.04LTS + xelatex(texlive2009) + xeCJK2.42 + biblatex1.2a +
+			biber0.8.2，
+		\item Windows7 + texlive2012(xelatex + xeCJK + biblatex + biber)。
+	\end{enumerate}
+	
+\section{关于.bib文件}
+	.bib文件中的域条目基本遵循biblatex中的定义，有3点需要说明
+	\begin{enumerate}
+		\item language域被用来区别中英文文献。如果是中文文献，language域一定要设置为cn或者zh。
+			英文文献的language可以不设定。
+		\item 对于连续出版物(periodical)的volume和number域进行了扩展，它们可以是形如``123-234''的区间值
+		\item 由于GB/T7714-2005标准规定的文献类型标志在biblatex中没有对应项，所以biblatex的自定义域usera表示
+	\end{enumerate}
+\section{存在的问题}
+	\begin{enumerate}
+		\item 目前所有的标点都采用半角标点。这样是否正确还不清楚。是不是需要加入其它标点
+			使用方案，例如英文文献使用半角标点，中文文献使用全角标点，又或者全使用全角比
+			标点
+		\item 目前文献项目的断行还需要进一步完善。
+		\item 如果使用者在使用过程中发现任何问题或者有任何建议，请不吝赐教。我的邮箱地址是
+		\url{lizhqi1983@163.com}
+	\end{enumerate}
+	
+\section{ChangeLog}
+\subsection{0.02b}
+	\begin{enumerate}
+	\item 添加了与Makefile对于的windows批处理文件run.bat
+	\item 修正了readme.tex的一处疏漏
+	\item 修正了\verb|authoryear_test.tex|中的一处错误
+	\item 修正了在测试环境1下对英文名字处理的一处错误
+	\end{enumerate}
+\end{document}

@@ -1,0 +1,63 @@
+\documentclass{article}
+\usepackage{fontspec}
+\usepackage{xunicode}
+\usepackage{xltxtra}
+\usepackage[CJKnumber]{xeCJK}
+%windows
+%\setCJKmainfont[BoldFont=SimHei]{SimSun}
+%linux
+\setCJKmainfont[BoldFont=WenQuanYi Zen Hei]{AR PL UMing CN}
+%gb7714ay为作者出版年应用格式
+
+%支持的选项
+%gbtverbose 在一些关键域空缺时(例如title等)，则会在该域应该出现的位置打印警告信息(例如“标题空缺”)。默认为false
+%lastnamefirst 英文名字姓在前名在后，例如author域设置为 Donald E. Knuth 那么输出中"Knuth Donald E."，默认为true
+%gbtinits 名字的缩写采用GB/T7714中的规范，例如Donald E. Knuth的名字的缩写为 "D E Knuth" 而不是 "D. E. Knuth", 默认为true
+%firstinits 名字的缩写采用加缩写符号的方式即Donald E. Knuth的名字的缩写为缩写为“D. E. Knuth"，
+%设定这一项为true的同时要把gbtinits设定为false
+
+%设定gbtinits=false,firstinits=true,lastnamefirst=false,可以输出符合一般英文名规
+%范的输出，例如Donald E. Knuth 的输出为 D. E. Knuth
+
+\usepackage[backend=biber,gbtverbose=true,sorting=nty, style=gb7714ay]{biblatex}
+
+%重定义这个命令可以更改应用文献一节中采用的字体，该命令可以包含任何合法的Latex字体命令
+\renewcommand{\bibfont}{\fontsize{8pt}{8pt}\selectfont}
+
+%可以通过\defbibheading命令定义参考文献一节的章节标题的样式，
+%在打印参考文献是使用heading选项选择想要的标题样式，例如\printbibliography[heading=nobibhead]
+\newcommand*{\zhrefname}{参考文献}
+\defbibheading{bibhead}[\zhrefname]{%
+    \section*{\fontsize{8pt}{8pt}\selectfont#1}%
+    \markboth{#1}{#1}}
+	
+\defbibheading{nobibhead}[]{}
+
+\addbibresource{./ref.bib}
+\begin{document}
+\section{引用单篇文献}\newrefsection
+使用\verb|\cite|生成引用，\verb|\cite*|生成不包含作者名的引用，示例如下
+
+The notion of an invisible college has been explored in the sciences\cite{ay1}. Its absence among historians is notes by
+Stieg\cite*{ay2}\dots.
+\printbibliography[heading=bibhead]
+\section{引用同一著者同年出版的多篇文献}\newrefsection%使用\newrefsession可以结束上一个引用章节，开始下一个，详细说明请参看biblatex文档
+\nocite{ay3}
+\nocite{ay4}
+\printbibliography[heading=bibhead]%使用\printbibliography命令打印参考文献，详细参数请参看biblatex文档
+\section{多次引用同一著者的同一文献}\newrefsection
+使用\verb|\cite[][pages]{}|生成包含引用页数的引用，示例如下：
+
+\nocite{ay5}\nocite{ay6}\nocite{ay7}\nocite{ay8}
+主编靠编辑思想指挥全局已是编辑界的共识\cite{ay7}，然而对于编辑思想至今没有一个明确的界定，故不妨提出一个架构\dots\dots 参与
+讨论。由于“思想”的内涵是“客观存在反映在人的意识中经过思维活动而产生的结果”\cite[][1194]{ay8}，所以“编辑思想”的内涵就是编辑实践
+反映在编辑工作的意识中“经过思维活动而产生的结果”。\dots\dots《中国青年》杂志创办人追求的高格调——理性的成熟与热点的凝聚\cite{ay6}，
+表明其读者群的文化品位的高层次\dots\dots“方针”指“引导事业前进的方向和目标”\cite[][354]{ay8}。\dots\dots 对编辑方针，1981年中国科协
+副主席裴丽生曾经有过科学的论断——“自然科学学术期刊必须坚持以马列主义、毛泽东思想为指导，贯彻为国民经济发展服务，理论和实践相结合，普及
+与提高相结合，‘百花齐放，百家争鸣’的方针”\cite{ay5}它完整地回答了为谁服务，怎样服务，如何服务的更好的问题。
+\printbibliography[heading=bibhead]
+\section{中英文文献排序测试}\newrefsection
+\nocite{ay1}\nocite{ay2}\nocite{ay5}\nocite{ay6}\nocite{ay3}\nocite{ay4}\nocite{ay7}\nocite{ay8}
+\printbibliography[heading=bibhead]
+\end{document}
+
