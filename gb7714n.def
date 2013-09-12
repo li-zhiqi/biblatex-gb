@@ -1,4 +1,8 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%Specific macros for gb7714n.bbx%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \ProvidesFile{gb7714n.bbx}
+
 \newtoggle{gbt@authoryear}\togglefalse{gbt@authoryear}
 \ExecuteBibliographyOptions{language=american,block=space,maxbibnames=3,
 	minbibnames=3,maxcitenames=1, mincitenames=1, alldates=iso8601,sorting=none}
@@ -21,7 +25,3 @@
       \renewrobustcmd*{\bibrangedash}{--}}
   {\endlist}
   {\item}
-
-\input{gb7714.def}
-
-\endinput

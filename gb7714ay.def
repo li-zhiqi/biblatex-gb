@@ -1,3 +1,7 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%Specific macros for gb7714ay.bbx%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \ProvidesFile{gb7714ay.bbx}
 \ExecuteBibliographyOptions{language=american,block=space,maxnames=3,minnames=3,alldates=iso8601,labelyear=true}
 \newtoggle{gbt@authoryear}\toggletrue{gbt@authoryear}
@@ -15,7 +19,3 @@
   }
   {\endlist}
   {\item}%
-  
-\input{gb7714.def}
-  
-\endinput
