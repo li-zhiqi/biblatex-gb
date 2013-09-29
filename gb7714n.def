@@ -1,27 +1,245 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%Specific macros for gb7714n.bbx%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%Specific macros for gb7714n.bbx%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \ProvidesFile{gb7714n.bbx}
 
-\newtoggle{gbt@authoryear}\togglefalse{gbt@authoryear}
 \ExecuteBibliographyOptions{language=american,block=space,maxbibnames=3,
-	minbibnames=3,maxcitenames=1, mincitenames=1, alldates=iso8601,sorting=none}
+    minbibnames=3,maxcitenames=1,mincitenames=1,alldates=iso8601,sorting=none}
+
+\newtoggle{gb@inits}\toggletrue{gb@inits}
+\newtoggle{gb@lastnamefirst}\toggletrue{gb@lastnamefirst}
+\newtoggle{gb@verbose}\togglefalse{gb@verbose}
+
+\DeclareBibliographyOption{gbinits}[true]{\settoggle{gb@inits}{#1}}
+\DeclareBibliographyOption{lastnamefirst}[true]{\settoggle{gb@lastnamefirst}{#1}
+}
+\DeclareBibliographyOption{gbverbose}[true]{\settoggle{gb@verbose}{#1}}
+
+
+% print date, volume and number
+\newcommand*{\gb@print@date@volume@number@i}[3]{%
+        \usebibmacro{gb@print@date}[#1]%
+        \setunit{\addcomma\addthinspace}%
+        \expandafter\printtext\expandafter{#2}%
+        \setunit{}%
+        \ifdefempty{#3}{}{%
+            \printtext[gb@fmt@parenthesis]{#3}}}%
+    
+\newbibmacro*{gb@print@date@volume@number}{%
+    \gb@parse@range{\thefield{volume}}%
+    \edef\gb@volume@first{\gb@range@first}%
+    \edef\gb@volume@second{\gb@range@second}%
+    \gb@parse@range{\thefield{number}}%
+    \edef\gb@number@first{\gb@range@first}%
+    \edef\gb@number@second{\gb@range@second}%
+    \gb@print@date@volume@number@i{}{\gb@volume@first}{\gb@number@first}%
+    \iffieldundef{endyear}{}{%
+        \printtext{\bibrangedash}%
+        \gb@print@date@volume@number@i%
+            {end}{\gb@volume@second}{\gb@number@second}}}%	
+	
+% print location, publisher/institution and date
+\newbibmacro*{gb@print@location@publisher@date}{%
+    \iflistundef{location}%
+        {\iffieldundef{url}%
+            {\printtext[gb@fmt@bracket]{\gb@csuse{gb@str@nolocation}}}%
+            {\printtext{}}}%
+        {\printlist{location}}%
+    \setunit*{\addthinspace\addcolon\addthinspace}%
+    \iflistundef{publisher}%
+        {\iffieldundef{url}%
+            {\printtext[gb@fmt@bracket]{\gb@csuse{gb@str@nopublisher}}}%
+            {\printtext{}}}%
+        {\printlist{publisher}}%
+    \setunit*{\addcomma\addthinspace}%
+    \usebibmacro{gb@print@date}}
+
+\newbibmacro*{gb@print@location@institution@date}{%
+    \iflistundef{location}%
+        {\iffieldundef{url}{%
+                \printtext[gb@fmt@bracket]{\gb@csuse{gb@str@nolocation}}}{}}%
+        {\printlist{location}}%
+    \ifpunct{}{\setunit*{\addthinspace\addcolon\addthinspace}}%
+    \printlist{institution}%
+    \setunit{\addcomma\addthinspace}%
+    \usebibmacro{gb@print@date}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%% entries formats %%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareBibliographyDriver{book}{%
+    \usebibmacro{gb@print@names}{author}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@title}{title}%
+    \printfield{usera}%
+    \newunit\newblock%
+    \printfield{edition}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@names}{translator}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@location@publisher@date}%
+    \setunit{\addcolon\addthinspace}%
+    \printfield{pages}%
+    \setunit{}%
+    \usebibmacro{gb@print@urldate}%
+    \newunit\newblock%
+    \printfield{url}%
+    \finentry}
+    
+\DeclareBibliographyDriver{inbook}{%
+    \usebibmacro{gb@print@names}{author}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@title}{title}%
+    \printfield{usera}%
+    \ifnameundef{translator}{}{%
+        \newunit\newblock%
+        \usebibmacro{gb@print@names}{translator}}%
+    \setunit{\nobreak\gb@doubleslash}%
+    \usebibmacro{gb@print@names}{bookauthor}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@title}{booktitle}%
+    \newunit\newblock%
+    \printfield{edition}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@location@publisher@date}%
+    \setunit{\addthinspace\addcolon\addthinspace}%
+    \printfield{pages}%
+    \setunit{}%
+    \usebibmacro{gb@print@urldate}%
+    \newunit\newblock%
+    \printfield{url}%
+    \finentry}
+    
+\DeclareBibliographyDriver{periodical}{%
+    \usebibmacro{gb@print@names}{editor}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@title}{title}%
+    \printfield{usera}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@date@volume@number}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@location@publisher@date}%
+    \setunit{}%
+    \usebibmacro{gb@print@urldate}%
+    \newunit\newblock%
+    \printfield{url}%
+    \finentry}
+    
+\DeclareBibliographyDriver{article}{%
+    \usebibmacro{gb@print@names}{author}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@title}{title}%
+    \printfield{usera}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@title}{journaltitle}%
+    \setunit{\addcomma\addthinspace}%
+    \usebibmacro{gb@print@date@volume@number}%
+    \setunit{\addthinspace\addcolon\addthinspace}%
+    \printfield{pages}%
+    \setunit{}%
+    \usebibmacro{gb@print@urldate}%
+    \newunit\newblock%
+    \printfield{url}%
+    \finentry}
+    
+\DeclareBibliographyDriver{patent}{%
+    \usebibmacro{gb@print@names}{author}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@title}{title}%
+    \setunit{\addcomma\addthinspace}%
+    \printfield{number}%
+    \printfield{usera}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@date}%
+    \usebibmacro{gb@print@urldate}%
+    \newunit\newblock%
+    \printfield{url}%
+    \finentry}
+    
+\DeclareBibliographyDriver{online}{%
+    \usebibmacro{gb@print@names@}{author}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@title}{title}%
+    \printfield{usera}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@location@publisher@date}%
+    \usebibmacro{gb@print@urldate}%
+    \newunit\newblock%
+    \printfield{url}%
+    \finentry}
+
+\DeclareBibliographyDriver{proceedings}{%
+    \usebibmacro{gb@print@names}{editor}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@title}{title}%
+    \printfield{usera}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@location@publisher@date}%
+    \newunit\newblock%
+    \printfield{url}%
+    \finentry}
+
+\DeclareBibliographyDriver{inproceedings}{%
+    \usebibmacro{gb@print@names}{author}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@title}{title}%
+    \printfield{usera}%
+    \setunit{\nobreak\gb@doubleslash}%
+    \ifnameundef{editor}{}{%
+            \usebibmacro{gb@print@names}{editor}%
+            \newunit\newblock}%
+    \usebibmacro{gb@print@title}{booktitle}%
+    \newunit\newblock%
+    \iflistundef{publisher}%
+        {\usebibmacro{gb@print@location@institution@date}}%
+        {\usebibmacro{gb@print@location@publisher@date}}%
+    \setunit{\addthinspace\addcolon\addthinspace}%
+    \printfield{pages}%
+    \usebibmacro{gb@print@urldate}%
+    \newunit\newblock%
+    \printfield{url}%
+    \finentry}
+    
+\DeclareBibliographyDriver{thesis}{%
+    \usebibmacro{gb@print@names}{author}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@title}{title}%
+    \printfield{usera}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@location@institution@date}%
+    \newunit\newblock%
+    \printfield{url}%
+    \finentry}
+    
+\DeclareBibliographyDriver{report}{%
+    \usebibmacro{gb@print@names}{author}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@title}{title}%
+    \printfield{usera}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@location@institution@date}%
+    \newunit\newblock%
+    \printfield{url}%
+    \finentry}
+    
 %bibliography environment
-\DeclareFieldFormat{labelnumberfmt}{\mkbibbrackets{#1}}
-\setlength{\labelnumberwidth}{5ex}
+\setlength{\labelnumberwidth}{4ex}
 \setlength{\biblabelsep}{0pt}
 \defbibenvironment{bibliography}
-  {\list
-     {\printtext[labelnumberfmt]{%
-        \printfield{prefixnumber}%
-        \printfield{labelnumber}}}
-     {\setlength{\labelwidth}{\labelnumberwidth}%
-      \setlength{\leftmargin}{\labelwidth}%
-      \setlength{\labelsep}{\biblabelsep}%
-      \addtolength{\leftmargin}{\labelsep}%
-      \setlength{\itemsep}{\bibitemsep}%
-      \setlength{\parsep}{\bibparsep}}%
-      \renewcommand*\makelabel[1]{##1\hss}%
-      \renewrobustcmd*{\bibrangedash}{--}}
+    {\list
+        {\printtext[gb@fmt@bracket]{%
+            \thefield{prefixnumber}%
+            \thefield{labelnumber}}}
+        {\setlength{\labelwidth}{\labelnumberwidth}%
+         \setlength{\leftmargin}{\labelwidth}%
+         \setlength{\labelsep}{\biblabelsep}%
+         \addtolength{\leftmargin}{\labelsep}%
+         \setlength{\itemsep}{\bibitemsep}%
+         \setlength{\parsep}{\bibparsep}%
+         \renewcommand*\makelabel[1]{##1\hss}%
+         \renewrobustcmd*{\bibrangedash}{--}%
+         %set name style
+         \iftoggle{gb@inits}%
+            {\renewcommand*{\bibinitperiod}{}}%
+            {\renewcommand*{\bibinitperiod}{\adddot}}}}
   {\endlist}
   {\item}

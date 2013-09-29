@@ -1,21 +1,261 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%Specific macros for gb7714ay.bbx%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%Specific macros for gb7714ay.bbx%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 \ProvidesFile{gb7714ay.bbx}
-\ExecuteBibliographyOptions{language=american,block=space,maxnames=3,minnames=3,alldates=iso8601,labelyear=true}
-\newtoggle{gbt@authoryear}\toggletrue{gbt@authoryear}
+\ExecuteBibliographyOptions{language=american,block=space,maxnames=3,minnames=3,
+    alldates=iso8601,labeldate=true}
 
+\newtoggle{gb@inits}\toggletrue{gb@inits}
+\newtoggle{gb@lastnamefirst}\toggletrue{gb@lastnamefirst}
+\newtoggle{gb@verbose}\togglefalse{gb@verbose}
+
+\DeclareBibliographyOption{gbinits}[true]{\settoggle{gb@inits}{#1}}
+\DeclareBibliographyOption{lastnamefirst}[true]{\settoggle{gb@lastnamefirst}{#1}
+}
+\DeclareBibliographyOption{gbverbose}[true]{\settoggle{gb@verbose}{#1}}
+
+
+%%print date, volume and number
+\newcommand*{\gb@print@volume@number@i}[2]{%
+        \expandafter\printtext\expandafter{#1}%
+        \ifdefempty{#2}{}{%
+            \printtext[gb@fmt@parenthesis]{#2}}}
+    
+\newbibmacro*{gb@print@volume@number}{%
+    \gb@parse@range{\thefield{volume}}%
+    \edef\gb@volume@first{\gb@range@first}%
+    \edef\gb@volume@second{\gb@range@second}%
+    \gb@parse@range{\thefield{number}}%
+    \edef\gb@number@first{\gb@range@first}%
+    \edef\gb@number@second{\gb@range@second}%
+    \gb@print@volume@number@i{\gb@volume@first}{\gb@number@first}%
+    \ifdefempty{\gb@volume@second}{}{%
+        \printtext{\bibrangedash}%
+        \gb@print@volume@number@i{\gb@volume@second}{\gb@number@second}}}
+
+% print location, publisher/institution
+\newbibmacro*{gb@print@location@publisher}{%
+    \iflistundef{location}%
+        {\iffieldundef{url}%
+            {\printtext[gb@fmt@bracket]{\gb@csuse{gb@str@nolocation}}}%
+            {\printtext{}}}%
+        {\printlist{location}}%
+    \setunit*{\addthinspace\addcolon\addthinspace}%
+    \iflistundef{publisher}%
+        {\iffieldundef{url}%
+            {\printtext[gb@fmt@bracket]{\gb@csuse{gb@str@nopublisher}}}
+            {\printtext{}}}%
+        {\printlist{publisher}}}
+
+\newbibmacro*{gb@print@location@institution}{%
+    \iflistundef{location}%
+        {\iffieldundef{url}%
+            {\printtext[gb@fmt@bracket]{\gb@csuse{gb@str@nolocation}}}%
+            {\printtext{}}}%
+        {\printlist{location}}%
+    \setunit*{\addthinspace\addcolon\addthinspace}%
+    \printlist{institution}}
+
+%%labelyear
+\csdef{gb@nolabelyear@cn}{出版年空缺}
+\csdef{gb@nolabelyear@en}{NO LABEL YEAR}
+
+\DeclareFieldAlias{labelyear}{plain}
+\DeclareFieldFormat{extrayear}{\mknumalph{#1}}
+
+\newbibmacro*{gb@print@labelyear@}{%
+    \iffieldundef{labelyear}{}{%
+        \printfield{labelyear}\printfield{extrayear}}}%
+
+\newbibmacro*{gb@print@undef@labelyear@msg}{%
+    \ifboolexpr{ test {\iffieldundef{labelyear}} and togl {gb@verbose} }%
+	{\printtext{\gb@csuse{gb@nolabelyear}}}{}}
+		     
+\newbibmacro*{gb@print@labelyear}{%
+    \usebibmacro{gb@print@undef@labelyear@msg}%
+    \usebibmacro{gb@print@labelyear@}}
+    
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% entries %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+\DeclareBibliographyDriver{book}{%
+    \usebibmacro{gb@print@names}{author}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@labelyear}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@title}{title}%
+    \printfield{usera}%
+    \newunit\newblock%
+    \printfield{edition}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@names}{translator}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@location@publisher}%
+    \setunit{\addthinspace\addcolon\addthinspace}%
+    \printfield{pages}%
+    \newunit\newblock%
+    \printfield{url}%
+    \finentry}
+
+\DeclareBibliographyDriver{inbook}{%
+    \usebibmacro{gb@print@names}{author}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@labelyear}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@title}{title}%
+    \printfield{usera}%
+    \ifnameundef{translator}{}{%
+        \newunit\newblock%
+        \usebibmacro{gb@print@names}{translator}}%
+    \setunit{\nobreak\gb@doubleslash}%
+    \usebibmacro{gb@print@names}{bookauthor}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@title}{booktitle}%
+    \newunit\newblock%
+    \printfield{edition}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@location@publisher}%
+    \setunit{\addthinspace\addcolon\addthinspace}%
+    \printfield{pages}%
+    \newunit\newblock%
+    \printfield{url}%
+    \finentry}
+    
+\DeclareBibliographyDriver{periodical}{%
+    \usebibmacro{gb@print@names}{editor}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@labelyear}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@title}{title}%
+    \printfield{usera}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@volume@number}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@location@publisher}%
+    \newunit\newblock%
+    \printfield{url}%
+    \finentry}
+    
+\DeclareBibliographyDriver{article}{%
+    \usebibmacro{gb@print@names}{author}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@labelyear}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@title}{title}%
+    \printfield{usera}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@title}{journaltitle}%
+    \setunit{\addcomma\addthinspace}%
+    \usebibmacro{gb@print@volume@number}%
+    \setunit{\addthinspace\addcolon\addthinspace}%
+    \printfield{pages}%
+    \newunit\newblock%
+    \printfield{url}%
+    \finentry}
+    
+\DeclareBibliographyDriver{patent}{%
+    \usebibmacro{gb@print@names}{author}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@labelyear}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@title}{title}%
+    \setunit{\addcomma\addthinspace}%
+    \printfield{number}%
+    \printfield{usera}%
+    \newunit\newblock%
+    \printfield{url}%
+    \finentry}
+    
+\DeclareBibliographyDriver{online}{%
+    \usebibmacro{gb@print@names@}{author}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@labelyear}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@title}{title}%
+    \printfield{usera}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@location@publisher}%
+    \printfield{url}%
+    \finentry}
+
+\DeclareBibliographyDriver{proceedings}{%
+    \usebibmacro{gb@print@names}{editor}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@labelyear}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@title}{title}%
+    \printfield{usera}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@location@publisher}%
+    \newunit\newblock%
+    \printfield{url}%
+    \finentry}
+
+\DeclareBibliographyDriver{inproceedings}{%
+    \usebibmacro{gb@print@names}{author}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@labelyear}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@title}{title}%
+    \printfield{usera}%
+    \setunit{\nobreak\gb@doubleslash}%
+    \ifnameundef{editor}{}{%
+            \usebibmacro{gb@print@names}{editor}%
+            \newunit\newblock}%
+    \usebibmacro{gb@print@title}{booktitle}%
+    \newunit\newblock%
+    \iflistundef{publisher}%
+        {\usebibmacro{gb@print@location@institution}}%
+        {\usebibmacro{gb@print@location@publisher}}%
+    \setunit{\addthinspace\addcolon\addthinspace}%
+    \printfield{pages}%
+    \newunit\newblock%
+    \printfield{url}%
+    \finentry}
+    
+\DeclareBibliographyDriver{thesis}{%
+    \usebibmacro{gb@print@names}{author}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@labelyear}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@title}{title}%
+    \printfield{usera}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@location@institution}%
+    \newunit\newblock%
+    \printfield{url}%
+    \finentry}
+    
+\DeclareBibliographyDriver{report}{%
+    \usebibmacro{gb@print@names}{author}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@labelyear}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@title}{title}%
+    \printfield{usera}%
+    \newunit\newblock%
+    \usebibmacro{gb@print@location@institution}%
+    \newunit\newblock%
+    \printfield{url}%
+    \finentry}
+    
+%bibliography environment
+\setlength{\labelnumberwidth}{4ex}
+\setlength{\biblabelsep}{0pt}
 \defbibenvironment{bibliography}
-  {\list
-     {}
-     {\setlength{\labelwidth}{0pt}%
-      \setlength{\leftmargin}{\labelwidth}%
-	  \setlength{\labelsep}{0pt}%
-	  \addtolength{\leftmargin}{\labelsep}%
-      \setlength{\itemsep}{\bibitemsep}%
-      \setlength{\parsep}{\bibparsep}
-	  \renewrobustcmd*{\bibrangedash}{--}}%
-  }
+    {\list
+        {}
+        {\setlength{\labelwidth}{0pt}%
+         \setlength{\leftmargin}{\labelwidth}%
+         \setlength{\labelsep}{0pt}%
+         \addtolength{\leftmargin}{\labelsep}%
+         \setlength{\itemsep}{\bibitemsep}%
+         \setlength{\parsep}{\bibparsep}%
+         \renewrobustcmd*{\bibrangedash}{--}%
+         %set name style
+         \iftoggle{gb@inits}%
+            {\renewcommand*{\bibinitperiod}{}}%
+            {\renewcommand*{\bibinitperiod}{\adddot}}}}
   {\endlist}
-  {\item}%
+  {\item}

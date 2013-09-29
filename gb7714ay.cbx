@@ -2,17 +2,14 @@
 \ExecuteBibliographyOptions{labelyear,sorting=nty}
 
 %%name format
-\DeclareNameFormat{gbt@cbx@name@fmt}{%
-    \gbt@if@lang@cn%
-        {\usebibmacro{gbt@cbx@cn@name@fmt}{#1}{#3}}%
-        {\usebibmacro{gbt@cbx@en@name@fmt}{#1}{#3}}}
+\DeclareNameFormat{gb@cbx@name@fmt}{\gb@usebibmacro{gb@cbx@name@fmt}{#1}{#3}}
 		
-\newbibmacro*{gbt@cbx@cn@name@fmt}[2]{%
+\newbibmacro*{gb@cbx@name@fmt@cn}[2]{%
 	#1#2%
 	\ifmorenames%
 		{\addnbthinspace\gbt@str@cn@addothers}%
 		{}}
-\newbibmacro*{gbt@cbx@en@name@fmt}[2]{%
+\newbibmacro*{gb@cbx@name@fmt@en}[2]{%
 	#1%
 	\ifmorenames%
 		{\addnbthinspace\gbt@str@en@addothers}%
@@ -27,12 +24,13 @@
 	
 \newbibmacro*{gbt@cbx@main}{%
 	\printnames[gbt@cbx@name@fmt]{labelname}%
-	\gbt@addcomma\addspace%
-	\usebibmacro{gbt@print@labelyear}}
+	\addcomma\addspace%
+	\usebibmacro{gb@print@labelyear}}
 	
 \newbibmacro*{gbt@cbx@main@star}{%
-	\usebibmacro{gbt@print@labelyear}}
+	\usebibmacro{gb@print@labelyear}}
 
+% \cite
 \DeclareCiteCommand{\cite}[]
 {%
 	\usebibmacro{gbt@cbx@num@print@prenote}%
@@ -42,7 +40,8 @@
 {%
 	\printtext{\bibcloseparen}%
 	\usebibmacro{gbt@cbx@num@print@postnote}}%
-	
+
+% \cite*
 \DeclareCiteCommand*{\cite}[]
 {%
 	\usebibmacro{gbt@cbx@num@print@prenote}%
@@ -52,4 +51,5 @@
 {%
 	\printtext{\bibcloseparen}%
 	\usebibmacro{gbt@cbx@num@print@postnote}}%
+
 \endinput

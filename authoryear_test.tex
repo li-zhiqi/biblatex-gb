@@ -4,9 +4,9 @@
 \usepackage{xltxtra}
 \usepackage[CJKnumber]{xeCJK}
 %windows
-%\setCJKmainfont[BoldFont=SimHei]{SimSun}
+\setCJKmainfont[BoldFont=SimHei]{SimSun}
 %linux
-\setCJKmainfont[BoldFont=WenQuanYi Zen Hei]{AR PL UMing CN}
+%\setCJKmainfont[BoldFont=WenQuanYi Zen Hei]{AR PL UMing CN}
 %gb7714ay为作者出版年应用格式
 
 %支持的选项
@@ -19,7 +19,7 @@
 %设定gbtinits=false,firstinits=true,lastnamefirst=false,可以输出符合一般英文名规
 %范的输出，例如Donald E. Knuth 的输出为 D. E. Knuth
 
-\usepackage[backend=biber,gbtverbose=true,sorting=nty, style=gb7714ay]{biblatex}
+\usepackage[backend=biber,gbverbose=true,sorting=nty, style=gb7714ay]{biblatex}
 
 %重定义这个命令可以更改应用文献一节中采用的字体，该命令可以包含任何合法的Latex字体命令
 \renewcommand{\bibfont}{\fontsize{8pt}{8pt}\selectfont}
@@ -34,6 +34,11 @@
 \defbibheading{nobibhead}[]{}
 
 \addbibresource{./ref.bib}
+
+%debug
+\tracingcommands=1
+\tracingmacros=1
+\tracingoutput=1
 \begin{document}
 \section{引用单篇文献}\newrefsection
 使用\verb|\cite|生成引用，\verb|\cite*|生成不包含作者名的引用，示例如下

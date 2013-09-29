@@ -4,9 +4,9 @@
 \usepackage{xltxtra}
 \usepackage[CJKnumber]{xeCJK}
 %windows
-%\setCJKmainfont[BoldFont=SimHei]{SimSun}
+\setCJKmainfont[BoldFont=SimHei]{SimSun}
 %linux
-\setCJKmainfont[BoldFont=WenQuanYi Zen Hei]{AR PL UMing CN}
+%\setCJKmainfont[BoldFont=WenQuanYi Zen Hei]{AR PL UMing CN}
 %支持的选项
 %gbtverbose 在一些关键域空缺时(例如title等)，则会在该域应该出现的位置打印警告信息(例如“标题空缺”)。默认为false
 %lastnamefirst 英文名字姓在前名在后，例如author域设置为 Donald E. Knuth 那么输出中"Knuth Donald E."，默认为true
@@ -14,9 +14,10 @@
 %firstinits 名字的缩写采用加缩写符号的方式即Donald E. Knuth的名字的缩写为缩写为“D. E. Knuth"，
 %设定这一项为true的同时要把gbtinits设定为false
 
-%设定gbtinits=false,firstinits=true,lastnamefirst=false,可以输出符合一般英文名规
+%设定gbinits=false,firstinits=true,lastnamefirst=false,可以输出符合一般英文名规
 %范的输出，例如Donald E. Knuth 的输出为 D. E. Knuth
-\usepackage[backend=biber,gbtverbose=true,style=gb7714n]{biblatex}
+\usepackage[backend=biber,gbverbose=true,style=gb7714n,gbinits=true,
+firstinits=true,lastnamefirst=true]{biblatex}
 	
 %重定义这个命令可以更改应用文献一节中采用的字体，该命令可以包含任何合法的Latex字体命令
 \renewcommand{\bibfont}{\fontsize{8pt}{8pt}\selectfont}
@@ -33,7 +34,11 @@
 %添加文献数据库
 \addbibresource{./ref.bib}
 
-
+%\usepackage{hyperref}
+%debug
+\tracingcommands=0
+\tracingmacros=0
+%\tracingoutput=1
 
 \begin{document}
 \section{专著(book)}\newrefsection%使用\newrefsession可以结束上一个引用章节，开始下一个，详细说明请参看biblatex文档
@@ -102,6 +107,13 @@
 \nocite{aproceedings3}
 \printbibliography[heading=nobibhead]
 
+\section{会议论文(inproceedings)}\newrefsection
+在标准中没有这个类型，但实际中很常见。
+\nocite{inproceeding1}
+\nocite{ay5}
+\nocite{ay7}
+\printbibliography[heading=nobibhead]
+
 \section{科技报告(report)}\newrefsection
 \nocite{areport1}
 \nocite{areport2}
@@ -112,6 +124,7 @@
 \nocite{athesis2}
 \printbibliography[heading=nobibhead]
 
+
 \section{其它测试}\newrefsection
 \nocite{booknoauthor}
 \nocite{booknolocation}
@@ -121,5 +134,6 @@
 \nocite{bookadd1}
 \nocite{inproceeding1}
 \nocite{articlemorenames}
+\nocite{bookmoretranslators}
 \printbibliography[heading=bibhead]
 \end{document}
